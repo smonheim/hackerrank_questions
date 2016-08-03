@@ -1,0 +1,65 @@
+def Pairer(in_arr, k):
+  i = 0
+  j = 1
+  tick = []
+  [tick.append([]) for x in in_arr]
+  while j < len(in_arr) and i < len(in_arr):
+    if in_arr[j] - in_arr[i] <= k:
+      tick[i].append([in_arr[i],in_arr[j]])
+      if j == len(in_arr) - 1:
+        i += 1
+      else:
+        j += 1
+    else:
+      i += 1
+    if i == j:
+      j += 1
+  return tick
+
+n, k = raw_input().strip().split(' ')
+n, k = int(n), int(k)
+arr = map(int, raw_input().strip().split(' '))
+q = int(raw_input().strip())
+ans = []
+
+for x in range(q):
+  l, r = raw_input().strip().split(' ')
+  l, r = int(l), int(r)
+  sub_arr = arr[l : r + 1]
+  sub_arr.sort()
+  set_arr = list(set(sub_arr))
+  sub_count = []
+  [sub_count.append(sub_arr.count(y)) for y in set_arr]
+  
+  # if there's only one value in the sub_array return '0'
+  if r == l:
+    print 0
+    
+  # possible valid pairs
+  else:
+    ans_arr = Pairer(set_arr, k)
+    count_dict = dict(zip(set_arr, sub_count))
+    tick = 0
+    
+    # could put this outside if I wanted by just appending, but it's still inefficient
+    for x in range(len(ans_arr)):
+      for y in range(len(ans_arr[x])):
+        tick += count_dict[ans_arr[x][y][0]] * count_dict[ans_arr[x][y][1]]
+    for x in range(len(set_arr)):
+      if count_dict[set_arr[x]] > 1:
+        tick += (count_dict[set_arr[x]] * (count_dict[set_arr[x]] - 1)) / 2
+    print tick
+      
+
+    ######################################################################
+    #                               Example                              #
+    #k = 2                                                               #
+    #arr = 1,3,4,3,0,5                                                   #
+    #set_arr = 0,1,3,4,5                                                 #
+    #count =   1,1,2,1,1                                                 #
+    #ans_arr = [[[0,1]], [[1,3]], [[3,4],[3,5]], [[4,5]]]                #
+    #ans = (1 * 1) + (1 * 2) + ((2 * 1) + (2 * 1)) + (1 * 1)             #
+    #                                                                    #
+    ######################################################################
+
+  
